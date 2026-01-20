@@ -56,6 +56,19 @@
     }
   }
 
+.user-avatar {
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px;
+  min-height: 36px;
+  max-width: 36px;
+  max-height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  flex-shrink: 0;
+}
+
   .user-info {
     display: flex;
     align-items: center;

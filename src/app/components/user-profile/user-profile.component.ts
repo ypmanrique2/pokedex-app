@@ -32,28 +32,28 @@ export class UserProfileComponent implements OnInit {
   ];
 
   movieGenres = [
-    { value: 'action', label: 'Acción', icon: '💥' },
-    { value: 'adventure', label: 'Aventura', icon: '🗺️' },
-    { value: 'animation', label: 'Animación', icon: '🎨' },
-    { value: 'comedy', label: 'Comedia', icon: '😂' },
-    { value: 'crime', label: 'Crimen', icon: '🔍' },
-    { value: 'documentary', label: 'Documental', icon: '📹' },
-    { value: 'drama', label: 'Drama', icon: '🎭' },
-    { value: 'fantasy', label: 'Fantasía', icon: '🧙' },
-    { value: 'horror', label: 'Terror', icon: '😱' },
-    { value: 'mystery', label: 'Misterio', icon: '🕵️' },
-    { value: 'romance', label: 'Romance', icon: '💕' },
-    { value: 'sci-fi', label: 'Ciencia Ficción', icon: '🚀' },
-    { value: 'thriller', label: 'Suspenso', icon: '😰' },
-    { value: 'western', label: 'Western', icon: '🤠' },
-    { value: 'musical', label: 'Musical', icon: '🎵' },
-    { value: 'war', label: 'Bélica', icon: '⚔️' }
+    { value: 'action', label: 'Acción' },
+    { value: 'adventure', label: 'Aventura' },
+    { value: 'animation', label: 'Animación' },
+    { value: 'comedy', label: 'Comedia' },
+    { value: 'crime', label: 'Crimen' },
+    { value: 'documentary', label: 'Documental' },
+    { value: 'drama', label: 'Drama' },
+    { value: 'fantasy', label: 'Fantasía' },
+    { value: 'horror', label: 'Terror' },
+    { value: 'mystery', label: 'Misterio' },
+    { value: 'romance', label: 'Romance' },
+    { value: 'sci-fi', label: 'Ciencia Ficción' },
+    { value: 'thriller', label: 'Suspenso' },
+    { value: 'western', label: 'Western' },
+    { value: 'musical', label: 'Musical' },
+    { value: 'war', label: 'Bélica' }
   ];
 
   constructor(
     private userService: UserService,
     private pokemonService: PokemonService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadProfile();
@@ -128,10 +128,10 @@ export class UserProfileComponent implements OnInit {
     return colors[genre] || '#667eea';
   }
 
-  getMovieGenreInfo(genreValue: string): { icon: string; label: string } {
-  const genre = this.movieGenres.find(g => g.value === genreValue);
-  return genre || { icon: '🎬', label: genreValue };
-}
+  getMovieGenreInfo(genreValue: string): { label: string } {
+    const genre = this.movieGenres.find(g => g.value === genreValue);
+    return genre || { label: genreValue };
+  }
 
   openPokemonSelector(): void {
     this.showPokemonSelector = true;
