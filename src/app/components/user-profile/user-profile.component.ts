@@ -17,7 +17,7 @@ export class UserProfileComponent implements OnInit {
     favoriteMovieGenres: [],
     avatar: ''
   };
-
+  // Controla los modos de edición y mensajes
   editMode: boolean = false;
   savedMessage: boolean = false;
   showPokemonSelector: boolean = false;

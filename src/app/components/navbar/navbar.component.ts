@@ -16,10 +16,14 @@ export class NavbarComponent {
   readonly isAuthenticated$ = this.auth.isAuthenticated$;
 
   constructor(
+    // Servicio encargado del estado de autenticación
     private auth: AuthService,
+    // Servicio que expone el perfil del usuario
     private userService: UserService,
+    // Enrutamiento de navegación
     private router: Router
   ) { }
+  // Cierra sesión; limpia estado de autenticación y redirige a login
   logout(): void {
     this.auth.logout();
     this.router.navigate(['/login']);

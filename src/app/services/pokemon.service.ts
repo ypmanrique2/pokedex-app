@@ -34,7 +34,7 @@ export class PokemonService {
         switchMap(response => {
           const requests: Observable<any>[] =
             response.results.map((p: any) => this.http.get(p.url));
-
+          // Espera todas las respuestas
           return forkJoin(requests);
         }),
         map((pokemons: any[]) =>
@@ -71,6 +71,7 @@ export class PokemonService {
       );
   }
 
+  // Formatea datos crudos desde la API al modal Pokemón
   private formatPokemon(data: any): Pokemon {
     return {
       id: data.id,
