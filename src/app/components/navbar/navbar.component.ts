@@ -12,17 +12,18 @@ import { UserService, UserProfile } from '../../services/user.service';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent {
-  isAuthenticated$ = this.authService.isAuthenticated$;
-  userProfile$: Observable<UserProfile> = this.userService.userProfile$;
+
+  // Streams directos desde servicios
+  readonly user$ = this.userService.userProfile$; // naming consistente
+  readonly isAuthenticated$ = this.auth.isAuthenticated$;
 
   constructor(
-    private authService: AuthService,
+    private auth: AuthService,
     private userService: UserService,
     private router: Router
-  ) {}
-
+  ) { }
   logout(): void {
-    this.authService.logout();
+    this.auth.logout();
     this.router.navigate(['/login']);
   }
 }

@@ -8,61 +8,60 @@ const TOKEN_KEY = 'auth_token';
 const DEFAULT_AVATAR =
   'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
 
-  private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
-  public readonly isAuthenticated$: Observable<boolean> =
-    this.isAuthenticatedSubject.asObservable();
+  // Estado único de autenticación
+  private authState$ = new BehaviorSubject<boolean>(false);
 
-  private readonly VALID_USERNAME = 'iptdevs';
-  private readonly VALID_PASSWORD = '123456';
+  // Observable público (solo lectura)
+  readonly isAuthenticated$ = this.authState$.asObservable();
+
+  private readonly TOKEN_KEY = 'auth_token';
+  private readonly USER = 'iptdevs';
+  private readonly PASS = '123456';
 
   constructor(private userService: UserService) {
-    this.restoreSession();
+    this.restoreSession(); // Rehidrata sesión al arrancar la app
   }
 
   private restoreSession(): void {
-    const token = localStorage.getItem(TOKEN_KEY);
+    const token = localStorage.getItem(this.TOKEN_KEY);
     const user = this.userService.getUserProfile();
 
-    if (token && user?.nickname) {
-      this.isAuthenticatedSubject.next(true);
-    }
+    // Si existe token + perfil → sesión válida
+    this.authState$.next(!!(token && user?.nickname));
   }
 
   login(username: string, password: string): boolean {
-    if (username === this.VALID_USERNAME && password === this.VALID_PASSWORD) {
-
-      localStorage.setItem(
-        TOKEN_KEY,
-        btoa(`${username}:${Date.now()}`)
-      );
-
-      this.userService.updateUserProfile({
-        nickname: username,
-        email: `${username}@pokemon.com`,
-        avatar: DEFAULT_AVATAR,
-        favoriteTypes: [],
-        favoriteMovieGenres: []
-      });
-
-      this.isAuthenticatedSubject.next(true);
-      return true;
+    if (username !== this.USER || password !== this.PASS) {
+      return false;
     }
 
-    return false;
+    // Guardar token simple (simulación backend)
+    localStorage.setItem(this.TOKEN_KEY, btoa(`${username}:${Date.now()}`));
+
+    // Persistir perfil
+    this.userService.updateUserProfile({
+      nickname: username,
+      email: `${username}@pokemon.com`,
+      avatar: DEFAULT_AVATAR,
+      favoriteTypes: [],
+      favoriteMovieGenres: []
+    });
+
+    this.authState$.next(true);
+    return true;
   }
 
   logout(): void {
-    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(this.TOKEN_KEY);
     this.userService.clearProfile();
-    this.isAuthenticatedSubject.next(false);
+    this.authState$.next(false);
   }
 
-  isLoggedIn(): boolean {
-    return this.isAuthenticatedSubject.value;
+  // Snapshot sincrónico (para Guards)
+  isAuthenticated(): boolean {
+    return this.authState$.value;
   }
 }

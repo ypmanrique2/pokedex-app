@@ -17,10 +17,11 @@ export class LoginComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-    if (this.authService.isLoggedIn()) {
+    // Redirige si ya hay sesión activa
+    if (this.authService.isAuthenticated()) {
       this.router.navigate(['/pokemons']);
     }
   }
@@ -29,18 +30,18 @@ export class LoginComponent implements OnInit {
     this.errorMessage = '';
 
     if (!this.username || !this.password) {
-      this.errorMessage = 'Por favor ingresa usuario y contraseña';
+      this.errorMessage = 'Usuario y contraseña requeridos';
       return;
     }
 
-    const success = this.authService.login(this.username, this.password);
-
-    if (success) {
+    // Toda la lógica vive en AuthService
+    if (this.authService.login(this.username, this.password)) {
       this.router.navigate(['/pokemons']);
-    } else {
-      this.errorMessage = 'Credenciales incorrectas. Usa "iptdevs" y "123456"';
-      this.password = '';
+      return;
     }
+
+    this.errorMessage = 'Credenciales inválidas';
+    this.password = '';
   }
 
   togglePasswordVisibility(): void {

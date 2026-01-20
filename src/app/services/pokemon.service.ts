@@ -21,17 +21,17 @@ export class PokemonService {
 
   private baseUrl = 'https://pokeapi.co/api/v2';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getPokemons(limit: number = 20, offset: number = 0): Observable<Pokemon[]> {
     return this.http
       .get<any>(`${this.baseUrl}/pokemon?limit=${limit}&offset=${offset}`)
       .pipe(
         switchMap(response => {
-          const requests = response.results.map((p: any) =>
-            this.http.get<any>(p.url)
-          );
-          return forkJoin(requests) as Observable<any[]>;
+          const requests: Observable<any>[] =
+            response.results.map((p: any) => this.http.get(p.url));
+
+          return forkJoin(requests);
         }),
         map((pokemons: any[]) =>
           pokemons.map((p: any) => this.formatPokemon(p))

@@ -3,11 +3,8 @@
 
     <!-- Marca -->
     <div class="navbar-brand">
-      <img
-        src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png"
-        alt="Pokédex"
-        class="logo"
-      />
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png" alt="Pokédex"
+        class="logo" />
       <span class="brand-name">Pokédex</span>
     </div>
 
@@ -22,13 +19,9 @@
       </a>
 
       <!-- Usuario -->
-      <ng-container *ngIf="userProfile$ | async as user">
+      <ng-container *ngIf="user$ | async as user">
         <div class="user-info">
-          <img
-            [src]="user.avatar"
-            alt="Avatar"
-            class="user-avatar"
-          />
+          <img [src]="user.avatar" alt="Avatar" class="user-avatar" />
           <span class="user-name">{{ user.nickname }}</span>
 
           <button class="logout-btn" (click)="logout()">
