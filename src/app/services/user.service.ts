@@ -25,12 +25,12 @@ export class UserService {
   }
   // Perfil por defecto (fallback si no hay sesión)
   private readonly defaultProfile: UserProfile = {
-    nickname: 'iptdevs',
-    email: 'iptdevs@pokemon.com',
-    favoriteTypes: [],
-    favoriteMovieGenres: [],
-    avatar: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png'
-  };
+  nickname: '',
+  email: '',
+  favoriteTypes: [],
+  favoriteMovieGenres: [],
+  avatar: ''
+};
 
   // Estado reactivo de usuario; se inicializa desde localStorage.
   private userProfileSubject = new BehaviorSubject<UserProfile>(
@@ -56,9 +56,9 @@ export class UserService {
 
   // Limpia la sesión (logout)
   clearProfile(): void {
-    localStorage.removeItem(this.USER_KEY);
-    this.userProfileSubject.next(this.defaultProfile);
-  }
+  localStorage.removeItem(this.USER_KEY);
+  this.userProfileSubject.next(this.defaultProfile);
+}
 
   // Carga inicial desde localStorage
   private loadProfile(): UserProfile {

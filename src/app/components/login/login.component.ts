@@ -31,24 +31,29 @@ export class LoginComponent implements OnInit {
     }
   }
 
+  // Observable del envío del formulario de login
   onSubmit(): void {
-    // Limpia errores previos
     this.errorMessage = '';
 
-    // Validación básica de formulario
+    // Validación básica antes de llamar al back-end
     if (!this.username || !this.password) {
       this.errorMessage = 'Usuario y contraseña requeridos';
       return;
     }
 
-    // Redirección o mensaje de error según resultado
-    if (this.authService.login(this.username, this.password)) {
-      this.router.navigate(['/pokemons']);
-      return;
-    }
-    // Cuando se ingresan credenciales inválidas...
-    this.errorMessage = 'Credenciales inválidas';
-    this.password = '';
+    // Login real contra back-end
+    this.authService.login(this.username, this.password)
+      .subscribe({
+        next: () => {
+          // Login exitoso y navega
+          this.router.navigate(['/pokemons']);
+        },
+        error: () => {
+          // Login fallido y retroalimenta en vista UI
+          this.errorMessage = 'Credenciales inválidas';
+          this.password = '';
+        }
+      });
   }
 
   // Cambia la visibilidad de la contraseña
