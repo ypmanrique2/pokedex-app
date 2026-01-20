@@ -1,0 +1,165 @@
+<div class="profile-container">
+  <div class="profile-card">
+    <div class="profile-header">
+      <div class="avatar" [class.editable]="editMode" (click)="editMode && openPokemonSelector()">
+        <img [src]="profile.avatar" [alt]="profile.nickname">
+        <div class="avatar-overlay" *ngIf="editMode">
+          <span>📷 Cambiar</span>
+        </div>
+      </div>
+      <h1>Mi Perfil</h1>
+      <p *ngIf="!editMode">{{ profile.nickname }}</p>
+      <button *ngIf="editMode" class="change-avatar-btn" (click)="openPokemonSelector()">
+        Elegir Pokémon Favorito
+      </button>
+    </div>
+
+    <div class="success-message" *ngIf="savedMessage">
+      ✓ Perfil actualizado correctamente
+    </div>
+
+    <div class="profile-body">
+      <div class="form-section">
+        <h2>Información Personal</h2>
+
+        <div class="form-group">
+          <label>Nickname</label>
+          <input
+            type="text"
+            [(ngModel)]="profile.nickname"
+            [disabled]="!editMode"
+            placeholder="Tu nickname">
+        </div>
+
+        <div class="form-group">
+          <label>Email</label>
+          <input
+            type="email"
+            [(ngModel)]="profile.email"
+            [disabled]="!editMode"
+            placeholder="tu@email.com">
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2>Tipos de Pokémon Favoritos</h2>
+        <p class="section-description">
+          Selecciona tus tipos de Pokémon favoritos
+        </p>
+
+        <div class="types-grid">
+          <button
+            *ngFor="let type of availableTypes"
+            class="type-button"
+            [class.selected]="isTypeSelected(type)"
+            [style.background-color]="isTypeSelected(type) ? getTypeColor(type) : 'transparent'"
+            [style.border-color]="getTypeColor(type)"
+            [style.color]="isTypeSelected(type) ? 'white' : getTypeColor(type)"
+            (click)="editMode && toggleType(type)"
+            [disabled]="!editMode">
+            {{ type | titlecase }}
+          </button>
+        </div>
+
+        <div class="selected-types" *ngIf="profile.favoriteTypes.length > 0">
+          <strong>Seleccionados:</strong>
+          <span
+            *ngFor="let type of profile.favoriteTypes"
+            class="type-badge"
+            [style.background-color]="getTypeColor(type)">
+            {{ type | titlecase }}
+          </span>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2>🎬 Géneros de Películas Favoritas</h2>
+        <p class="section-description">
+          Selecciona tus géneros de películas preferidos
+        </p>
+
+        <div class="genres-grid">
+          <button
+            *ngFor="let genre of movieGenres"
+            class="genre-chip"
+            [class.selected]="isMovieGenreSelected(genre.value)"
+            [style.background-color]="isMovieGenreSelected(genre.value) ? getMovieGenreColor(genre.value) : 'transparent'"
+            [style.border-color]="getMovieGenreColor(genre.value)"
+            [style.color]="isMovieGenreSelected(genre.value) ? 'white' : getMovieGenreColor(genre.value)"
+            (click)="editMode && toggleMovieGenre(genre.value)"
+            [disabled]="!editMode">
+            <span class="genre-icon">{{ genre.icon }}</span>
+            <span class="genre-label">{{ genre.label }}</span>
+          </button>
+        </div>
+
+         <div class="selected-genres" *ngIf="profile.favoriteMovieGenres.length > 0">
+          <strong>Géneros seleccionados:</strong>
+          <span
+            *ngFor="let genreValue of profile.favoriteMovieGenres"
+            class="genre-badge"
+            [style.background-color]="getMovieGenreColor(genreValue)">
+            {{ getMovieGenreInfo(genreValue).icon }} {{ getMovieGenreInfo(genreValue).label }}
+          </span>
+        </div>
+
+      <div class="actions">
+        <button
+          *ngIf="!editMode"
+          class="edit-btn"
+          (click)="toggleEditMode()">
+          Editar Perfil
+        </button>
+
+        <div *ngIf="editMode" class="edit-actions">
+          <button class="save-btn" (click)="saveProfile()">
+            Guardar Cambios
+          </button>
+          <button class="cancel-btn" (click)="toggleEditMode()">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal selector de Pokémon -->
+  <div class="modal-overlay" *ngIf="showPokemonSelector" (click)="closePokemonSelector()">
+    <div class="modal-content pokemon-selector" (click)="$event.stopPropagation()">
+      <button class="close-btn" (click)="closePokemonSelector()">✕</button>
+
+      <div class="modal-header-selector">
+        <h2>Elige tu Pokémon Favorito</h2>
+        <div class="search-box">
+          <input
+            type="text"
+            [(ngModel)]="searchTerm"
+            placeholder="Buscar por nombre o ID..."
+            (keyup.enter)="searchPokemon()">
+          <button (click)="searchPokemon()">🔍 Buscar</button>
+        </div>
+      </div>
+
+      <div class="pokemon-grid-selector" *ngIf="!loadingPokemons">
+        <div
+          *ngFor="let pokemon of availablePokemons"
+          class="pokemon-card-selector"
+          (click)="selectPokemonAvatar(pokemon)">
+          <img [src]="pokemon.image" [alt]="pokemon.name">
+          <p>{{ pokemon.name | titlecase }}</p>
+          <span class="pokemon-id">#{{ pokemon.id }}</span>
+        </div>
+      </div>
+
+      <div class="loading-selector" *ngIf="loadingPokemons">
+        <div class="pokeball-loader"></div>
+        <p>Buscando Pokémon...</p>
+      </div>
+
+      <div class="no-results" *ngIf="!loadingPokemons && availablePokemons.length === 0">
+        <p>No se encontraron Pokémon 😢</p>
+        <button (click)="loadPopularPokemons()">Ver todos</button>
+      </div>
+    </div>
+  </div>
+</div>
