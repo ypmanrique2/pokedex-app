@@ -9,6 +9,7 @@ import { UserService, UserProfile } from '../../services/user.service';
   styleUrls: ['./user-profile.component.scss']
 })
 export class UserProfileComponent implements OnInit {
+  // Modelo local del perfil del usuario
   profile: UserProfile = {
     nickname: '',
     email: '',
@@ -24,6 +25,7 @@ export class UserProfileComponent implements OnInit {
   loadingPokemons: boolean = false;
   searchTerm: string = '';
 
+  // Array de tipos de Pokémon disponibles desde la API
   availableTypes = [
     'fire', 'water', 'grass', 'electric', 'psychic',
     'dragon', 'normal', 'fighting', 'flying', 'poison',
@@ -31,6 +33,7 @@ export class UserProfileComponent implements OnInit {
     'ice', 'dark', 'fairy'
   ];
 
+  // Array de gpeneros de películas con sus etiquetas
   movieGenres = [
     { value: 'action', label: 'Acción' },
     { value: 'adventure', label: 'Aventura' },
@@ -51,18 +54,22 @@ export class UserProfileComponent implements OnInit {
   ];
 
   constructor(
+    // Inyección de servicios necesarios
     private userService: UserService,
     private pokemonService: PokemonService
   ) { }
 
+  // Inicializa el perfil
   ngOnInit(): void {
     this.loadProfile();
   }
 
+  // Carga el perfil actual desde el servicio
   loadProfile(): void {
     this.profile = { ...this.userService.getUserProfile() };
   }
 
+  // Cambia al modo edición o carga el perfil si se cancela
   toggleEditMode(): void {
     if (this.editMode) {
       this.loadProfile();
@@ -70,16 +77,19 @@ export class UserProfileComponent implements OnInit {
     this.editMode = !this.editMode;
   }
 
+  // Guarda el perfil actualizado y quita modo edición
   saveProfile(): void {
     this.userService.updateUserProfile(this.profile);
     this.editMode = false;
     this.savedMessage = true;
 
+    // Tiempo limite para el mensaje
     setTimeout(() => {
       this.savedMessage = false;
     }, 3000);
   }
 
+  // Cambia la selección del tipo de Pokémon
   toggleType(type: string): void {
     const index = this.profile.favoriteTypes.indexOf(type);
     if (index > -1) {
@@ -89,10 +99,12 @@ export class UserProfileComponent implements OnInit {
     }
   }
 
+  // Verifica si el tipo de Pokémon fue seleccionado
   isTypeSelected(type: string): boolean {
     return this.profile.favoriteTypes.includes(type);
   }
 
+  // Cambia la selección de un género de película
   toggleMovieGenre(genre: string): void {
     const index = this.profile.favoriteMovieGenres.indexOf(genre);
     if (index > -1) {
@@ -102,10 +114,12 @@ export class UserProfileComponent implements OnInit {
     }
   }
 
+  // Verifica si el género de la película fue seleccionado
   isMovieGenreSelected(genre: string): boolean {
     return this.profile.favoriteMovieGenres.includes(genre);
   }
 
+  // Obtiene el color asociado al género de película
   getMovieGenreColor(genre: string): string {
     const colors: { [key: string]: string } = {
       action: '#FF6B6B',
@@ -128,6 +142,7 @@ export class UserProfileComponent implements OnInit {
     return colors[genre] || '#667eea';
   }
 
+  // Obtiene la etiqueta legible del género de película
   getMovieGenreInfo(genreValue: string): { label: string } {
     const genre = this.movieGenres.find(g => g.value === genreValue);
     return genre || { label: genreValue };
@@ -143,6 +158,7 @@ export class UserProfileComponent implements OnInit {
     this.searchTerm = '';
   }
 
+  // Carga Pokémon populares (hasta 50)
   loadPopularPokemons(): void {
     this.loadingPokemons = true;
     this.pokemonService.getPokemons(50, 0).subscribe({
@@ -157,6 +173,7 @@ export class UserProfileComponent implements OnInit {
     });
   }
 
+  // Busca Pokémon por nombre o ID (número
   searchPokemon(): void {
     if (!this.searchTerm.trim()) {
       this.loadPopularPokemons();
@@ -195,11 +212,13 @@ export class UserProfileComponent implements OnInit {
     }
   }
 
+  // Selecciona un Pokémon como avatar inicial
   selectPokemonAvatar(pokemon: Pokemon): void {
     this.profile.avatar = pokemon.image;
     this.closePokemonSelector();
   }
 
+  // Obtiene el color asociado según el tipo de Pokémon
   getTypeColor(type: string): string {
     const colors: { [key: string]: string } = {
       fire: '#F08030',

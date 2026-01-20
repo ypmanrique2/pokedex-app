@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, forkJoin } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
+// Modelo de dominio Pokémon usado en toda la app
 export interface Pokemon {
   id: number;
   name: string;
@@ -15,14 +16,17 @@ export interface Pokemon {
 }
 
 @Injectable({
+  // Servicio singleton para consumo de la PokeAPI
   providedIn: 'root'
 })
 export class PokemonService {
 
+  // URL base de la PokeAPI
   private baseUrl = 'https://pokeapi.co/api/v2';
 
   constructor(private http: HttpClient) { }
 
+  // Obtiene Pokémon por lista de paginación reducida a 20 para más rendimiento
   getPokemons(limit: number = 20, offset: number = 0): Observable<Pokemon[]> {
     return this.http
       .get<any>(`${this.baseUrl}/pokemon?limit=${limit}&offset=${offset}`)
@@ -39,16 +43,19 @@ export class PokemonService {
       );
   }
 
+  // Obtiene Pokémon por ID o número
   getPokemonById(id: number): Observable<Pokemon> {
     return this.http
       .get<any>(`${this.baseUrl}/pokemon/${id}`)
       .pipe(map((p: any) => this.formatPokemon(p)));
   }
 
+  // Obtiene Pokémon filtrados por tipo
   getPokemonsByType(type: string): Observable<Pokemon[]> {
     return this.http
       .get<any>(`${this.baseUrl}/type/${type}`)
       .pipe(
+        // Limita resultados y obtiene detalle de cada Pokémon
         switchMap(response => {
           const requests = response.pokemon
             .slice(0, 20)
@@ -57,6 +64,7 @@ export class PokemonService {
             );
           return forkJoin(requests) as Observable<any[]>;
         }),
+        // Limpia errores y normaliza resultados
         map((pokemons: any[]) =>
           pokemons.map((p: any) => this.formatPokemon(p))
         )

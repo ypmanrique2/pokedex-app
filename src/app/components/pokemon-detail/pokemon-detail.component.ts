@@ -9,6 +9,7 @@ export class PokemonDetailComponent implements OnInit {
 
   constructor() { }
 
+  // Hook del ciclo de vida del componente
   ngOnInit(): void {
   }
 

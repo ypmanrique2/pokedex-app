@@ -14,16 +14,20 @@
     </button>
   </div>
 
-  <div class="pokemon-grid" *ngIf="!loading && filteredPokemons.length > 0">
+  <div class="pokemon-grid">
     <div
       *ngFor="let pokemon of filteredPokemons"
       class="pokemon-card"
       (click)="openPokemonDetail(pokemon)">
+
       <div class="pokemon-id">#{{ pokemon.id.toString().padStart(3, '0') }}</div>
+
       <div class="pokemon-image">
-        <img [src]="pokemon.image" [alt]="pokemon.name">
+        <img [src]="pokemon.image" [alt]="pokemon.name" loading="lazy">
       </div>
+
       <h3 class="pokemon-name">{{ pokemon.name | titlecase }}</h3>
+
       <div class="pokemon-types">
         <span
           *ngFor="let type of pokemon.types"
@@ -35,18 +39,12 @@
     </div>
   </div>
 
-  <div class="loading" *ngIf="loading">
-    <div class="pokeball-loader"></div>
-    <p>Cargando Pokémon...</p>
+  <div #observerAnchor class="observer-anchor">
+    <div *ngIf="loading" class="loading-spinner">
+       Cargando más Pokémon...
+    </div>
   </div>
 
-  <div class="load-more" *ngIf="!loading && selectedFilter === 'all'">
-    <button (click)="loadMore()" class="load-more-btn">
-      Cargar más Pokémon
-    </button>
-  </div>
-
-  <!-- Modal de detalle -->
   <div class="modal-overlay" *ngIf="selectedPokemon" (click)="closeDetail()">
     <div class="modal-content" (click)="$event.stopPropagation()">
       <button class="close-btn" (click)="closeDetail()">✕</button>
@@ -68,20 +66,11 @@
         <div class="stats-section">
           <h3>Estadísticas Base</h3>
           <div class="stat" *ngFor="let stat of selectedPokemon.stats">
-            <div class="stat-name">{{ stat.name }}</div>
+            <div class="stat-name">{{ stat.name | titlecase }}</div>
             <div class="stat-bar">
               <div class="stat-fill" [style.width.%]="(stat.value / 255) * 100"></div>
             </div>
             <div class="stat-value">{{ stat.value }}</div>
-          </div>
-        </div>
-
-        <div class="info-section">
-          <div class="info-item">
-            <strong>Altura:</strong> {{ selectedPokemon.height / 10 }} m
-          </div>
-          <div class="info-item">
-            <strong>Peso:</strong> {{ selectedPokemon.weight / 10 }} kg
           </div>
         </div>
       </div>

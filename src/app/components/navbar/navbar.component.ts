@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { Observable } from 'rxjs';
-
 import { AuthService } from '../../services/auth.service';
-import { UserService, UserProfile } from '../../services/user.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-navbar',
@@ -13,7 +11,7 @@ import { UserService, UserProfile } from '../../services/user.service';
 })
 export class NavbarComponent {
 
-  // Streams directos desde servicios
+  // Streams directos desde los servicios
   readonly user$ = this.userService.userProfile$; // naming consistente
   readonly isAuthenticated$ = this.auth.isAuthenticated$;
 

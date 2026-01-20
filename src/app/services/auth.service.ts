@@ -11,12 +11,13 @@ const DEFAULT_AVATAR =
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
-  // Estado único de autenticación
+  // Estado interno de autenticación (true o false)
   private authState$ = new BehaviorSubject<boolean>(false);
 
   // Observable público (solo lectura)
   readonly isAuthenticated$ = this.authState$.asObservable();
 
+  // Credenciales mockeadas para demostración
   private readonly TOKEN_KEY = 'auth_token';
   private readonly USER = 'iptdevs';
   private readonly PASS = '123456';
@@ -26,15 +27,20 @@ export class AuthService {
   }
 
   private restoreSession(): void {
+    // Genera token simulado
     const token = localStorage.getItem(this.TOKEN_KEY);
+    // Persiste sesión en localStorage
     const user = this.userService.getUserProfile();
 
-    // Si existe token + perfil → sesión válida
+    // Si existe token y el perfil confirma sesión válida
     this.authState$.next(!!(token && user?.nickname));
   }
 
+  // Valida credenciales y simula autenticación
   login(username: string, password: string): boolean {
+    // Validación básica contra credenciales predefinidas
     if (username !== this.USER || password !== this.PASS) {
+      // Login fallido
       return false;
     }
 
@@ -50,10 +56,12 @@ export class AuthService {
       favoriteMovieGenres: []
     });
 
+    // Emite estado autenticado
     this.authState$.next(true);
     return true;
   }
 
+  // Cierra y limpia sesión del usuario
   logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
     this.userService.clearProfile();
