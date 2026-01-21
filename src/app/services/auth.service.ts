@@ -33,8 +33,8 @@ export class AuthService {
     ).pipe(
       tap((response: any) => {
         this.userService.updateUserProfile({
-          nickname: response.usuario, // viene del backend
-          avatar: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png',
+          nickname: response.perfil.usuario, // FIX
+          avatar: response.perfil.avatar,
           email: '',
           favoriteTypes: [],
           favoriteMovieGenres: []
@@ -46,18 +46,18 @@ export class AuthService {
   }
 
   // Logout real; limpia estado y redirige
-logout(): void {
-  this.http.post<any>(
-    `${this.API_URL}/logout`,
-    {},
-    { withCredentials: true }
-  ).subscribe(() => {
-    this.authState$.next(false);
-    this.router.navigate(['/login']);
-  });
-}
+  logout(): void {
+    this.http.post<any>(
+      `${this.API_URL}/logout`,
+      {},
+      { withCredentials: true }
+    ).subscribe(() => {
+      this.authState$.next(false);
+      this.router.navigate(['/login']);
+    });
+  }
 
-// Validar sesión al refrescar
+  // Validar sesión al refrescar
   private validateSession(): void {
     this.http.get<any>(
       `${this.API_URL}/validar`,
