@@ -25,12 +25,14 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-  this.authService.validarSesion().subscribe(res => {
-    if (res.logueado) {
-      this.router.navigate(['/pokemons']);
-    }
-  });
-}
+    // Valida si ya existe una sesión activa en el backend
+    this.authService.validarSesion().subscribe(isAuth => {
+      if (isAuth) {
+        // Si hay sesión, redirige directo
+        this.router.navigate(['/pokemons']);
+      }
+    });
+  }
 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
@@ -60,8 +62,5 @@ export class LoginComponent implements OnInit {
         this.errorMessage = 'Credenciales inválidas';
       }
     });
-
-    // Cambia la visibilidad de la contraseña
-    this.togglePasswordVisibility();
   }
 }

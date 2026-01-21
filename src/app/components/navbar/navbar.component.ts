@@ -11,9 +11,10 @@ import { UserService } from '../../services/user.service';
 })
 export class NavbarComponent {
 
+  // Observable que controla visibilidad
+  isAuthenticated$ = this.auth.isAuthenticated$();
   // Streams directos desde los servicios
   readonly user$ = this.userService.userProfile$; // naming consistente
-  readonly isAuthenticated$ = this.auth.isAuthenticated();
 
   constructor(
     // Servicio encargado del estado de autenticación

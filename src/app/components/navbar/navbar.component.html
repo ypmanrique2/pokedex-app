@@ -1,4 +1,5 @@
-<nav class="navbar" *ngIf="isAuthenticated$ | async">
+<nav *ngIf="isAuthenticated$ | async">
+  <!-- navbar completa -->
   <div class="navbar-container">
 
     <!-- Marca -->
@@ -24,9 +25,7 @@
           <img [src]="user.avatar" alt="Avatar" class="user-avatar" />
           <span class="user-name">{{ user.nickname }}</span>
 
-          <button class="logout-btn" (click)="logout()">
-            Cerrar sesión
-          </button>
+          <button (click)="logout()">Cerrar sesión</button>
         </div>
       </ng-container>
     </div>
