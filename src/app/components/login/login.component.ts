@@ -9,26 +9,21 @@ import { AuthService } from '../../services/auth.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  // Credenciales ingresadas por el usuario
-  username: string = '';
-  password: string = '';
-  // Mensaje de error para feedback en UI
-  errorMessage: string = '';
-  // Controla visibilidad de la contraseña
-  showPassword: boolean = false;
+
+  username = '';
+  password = '';
+  errorMessage = '';
+  showPassword = false;
 
   constructor(
-    // Manejo de autenticación
     private authService: AuthService,
-    // Navegación entre vistas
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-    // Valida si ya existe una sesión activa en el backend
+    // Si ya hay sesión, redirige
     this.authService.validarSesion().subscribe(isAuth => {
       if (isAuth) {
-        // Si hay sesión, redirige directo
         this.router.navigate(['/pokemons']);
       }
     });
@@ -38,27 +33,17 @@ export class LoginComponent implements OnInit {
     this.showPassword = !this.showPassword;
   }
 
-  // Observable del envío del formulario de login
   onSubmit(): void {
     this.errorMessage = '';
 
-    // Validación básica antes de llamar al back-end
-    if (!this.username || !this.password) {
-      this.errorMessage = 'Usuario y contraseña requeridos';
-      return;
-    }
-
-    // Login real contra back-end
     this.authService.login({
       usuario: this.username,
       clave: this.password
     }).subscribe({
-      next: res => {
-        console.log('Login OK', res);
+      next: () => {
         this.router.navigate(['/pokemons']);
       },
-      error: err => {
-        console.error(err);
+      error: () => {
         this.errorMessage = 'Credenciales inválidas';
       }
     });

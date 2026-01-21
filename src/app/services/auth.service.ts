@@ -6,42 +6,48 @@ import { map, tap } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
 
   private API_URL = environment.apiUrl;
-
-  // Estado global de autenticación
   private authenticated$ = new BehaviorSubject<boolean>(false);
 
   constructor(private http: HttpClient) {}
 
-  // Observable público (solo lectura)
   isAuthenticated$(): Observable<boolean> {
     return this.authenticated$.asObservable();
   }
 
   login(data: { usuario: string; clave: string }) {
-  return this.http.post(
-    `${this.API_URL}/api/auth/login`,
-    data
-  );
-}
+    return this.http
+      .post<any>(`${this.API_URL}/api/auth/login`, data, {
+        withCredentials: true
+      })
+      .pipe(
+        tap(res => {
+          if (res?.logueado) {
+            this.authenticated$.next(true);
+          }
+        })
+      );
+  }
 
   validarSesion(): Observable<boolean> {
     return this.http
-      .get<any>(`${this.API_URL}/api/auth/validar`)
+      .get<any>(`${this.API_URL}/api/auth/validar`, {
+        withCredentials: true
+      })
       .pipe(
         map(res => res.logueado === true),
         tap(isAuth => this.authenticated$.next(isAuth))
       );
   }
 
-  logout(): Observable<any> {
+  logout() {
     return this.http
-      .post(`${this.API_URL}/api/auth/logout`, {})
+      .post(`${this.API_URL}/api/auth/logout`, {}, {
+        withCredentials: true
+      })
       .pipe(
         tap(() => this.authenticated$.next(false))
       );

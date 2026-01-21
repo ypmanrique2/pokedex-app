@@ -16,16 +16,12 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   canActivate(): Observable<boolean> {
-    // Consulta al backend si hay sesión activa
     return this.auth.isAuthenticated$().pipe(
       tap(isAuth => {
-        // Si no está autenticado, redirige a login
         if (!isAuth) {
           this.router.navigate(['/login']);
         }
-      }),
-      // El guard solo devuelve true o false
-      map(isAuth => isAuth)
+      })
     );
   }
 }
