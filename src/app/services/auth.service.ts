@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 
@@ -13,11 +14,12 @@ export class AuthService {
   readonly isAuthenticated$ = this.authState$.asObservable();
 
   // URL del backend ya desplegado
-  private readonly API_URL = 'https://TU_BACKEND_URL';
+  private readonly API_URL = 'https://pokedex-api-back-end.onrender.com';
 
   constructor(
     private http: HttpClient,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router
   ) {
     this.validateSession(); // rehidrata al refrescar
   }
@@ -43,21 +45,19 @@ export class AuthService {
     );
   }
 
-  // Logout real
-  logout(): Observable<any> {
-    return this.http.post(
-      `${this.API_URL}/logout`,
-      {},
-      { withCredentials: true }
-    ).pipe(
-      tap(() => {
-        this.userService.clearProfile();
-        this.authState$.next(false);
-      })
-    );
-  }
+  // Logout real; limpia estado y redirige
+logout(): void {
+  this.http.post<any>(
+    `${this.API_URL}/logout`,
+    {},
+    { withCredentials: true }
+  ).subscribe(() => {
+    this.authState$.next(false);
+    this.router.navigate(['/login']);
+  });
+}
 
-  // Validar sesión al refrescar
+// Validar sesión al refrescar
   private validateSession(): void {
     this.http.get<any>(
       `${this.API_URL}/validar`,
