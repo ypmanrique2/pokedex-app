@@ -25,10 +25,15 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // Redirige si ya hay sesión activa
-    if (this.authService.isAuthenticated()) {
+  this.authService.validarSesion().subscribe(res => {
+    if (res.logueado) {
       this.router.navigate(['/pokemons']);
     }
+  });
+}
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
   }
 
   // Observable del envío del formulario de login
@@ -42,22 +47,21 @@ export class LoginComponent implements OnInit {
     }
 
     // Login real contra back-end
-    this.authService.login(this.username, this.password)
-      .subscribe({
-        next: () => {
-          // Login exitoso y navega
-          this.router.navigate(['/pokemons']);
-        },
-        error: () => {
-          // Login fallido y retroalimenta en vista UI
-          this.errorMessage = 'Credenciales inválidas';
-          this.password = '';
-        }
-      });
-  }
+    this.authService.login({
+      usuario: this.username,
+      clave: this.password
+    }).subscribe({
+      next: res => {
+        console.log('Login OK', res);
+        this.router.navigate(['/pokemons']);
+      },
+      error: err => {
+        console.error(err);
+        this.errorMessage = 'Credenciales inválidas';
+      }
+    });
 
-  // Cambia la visibilidad de la contraseña
-  togglePasswordVisibility(): void {
-    this.showPassword = !this.showPassword;
+    // Cambia la visibilidad de la contraseña
+    this.togglePasswordVisibility();
   }
 }

@@ -13,7 +13,7 @@ export class NavbarComponent {
 
   // Streams directos desde los servicios
   readonly user$ = this.userService.userProfile$; // naming consistente
-  readonly isAuthenticated$ = this.auth.isAuthenticated$;
+  readonly isAuthenticated$ = this.auth.isAuthenticated();
 
   constructor(
     // Servicio encargado del estado de autenticación
