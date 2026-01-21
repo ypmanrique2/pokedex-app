@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
+import { UserService } from '../services/user.service';
 import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -12,7 +13,10 @@ export class AuthService {
   private API_URL = environment.apiUrl;
   private authenticated$ = new BehaviorSubject<boolean>(false);
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private userService: UserService
+  ) { }
 
   isAuthenticated$(): Observable<boolean> {
     return this.authenticated$.asObservable();
@@ -27,9 +31,19 @@ export class AuthService {
         tap(res => {
           if (res?.logueado) {
             this.authenticated$.next(true);
+
+            // Sincroniza perfil
+            this.userService.updateUserProfile({
+              nickname: res.perfil.nombre || res.perfil.usuario,
+              email: '',
+              favoriteTypes: [],
+              favoriteMovieGenres: [],
+              avatar: res.perfil.avatar || ''
+            });
           }
         })
       );
+
   }
 
   validarSesion(): Observable<boolean> {

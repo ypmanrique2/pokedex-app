@@ -119,3 +119,28 @@
     }
   }
 }
+
+.pokemon-logout-btn {
+  background: linear-gradient(135deg, #7b96c5, #6e8cf8);
+  border: 0px solid #000;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #000;
+  transition: all 0.15s ease-in-out;
+  font-family: 'Press Start 2P', sans-serif;
+
+  &:hover {
+    background: linear-gradient(135deg, #4d7cff, #144dd1);
+    transform: translateY(-0.5px);
+    box-shadow: 0 0.1px 0 #6b696933;
+  }
+
+  &:active {
+    transform: translateY(1px);
+    box-shadow: 0 0.1px 0 #7f7e7e;
+  }
+}

@@ -66,3 +66,5 @@ export class UserService {
     return saved ? JSON.parse(saved) : this.defaultProfile;
   }
 }
+
+export default UserService;

@@ -25,7 +25,9 @@
           <img [src]="user.avatar" alt="Avatar" class="user-avatar" />
           <span class="user-name">{{ user.nickname }}</span>
 
-          <button (click)="logout()">Cerrar sesión</button>
+          <button class="pokemon-logout-btn" (click)="logout()">
+            ⬅ Salir
+          </button>
         </div>
       </ng-container>
     </div>

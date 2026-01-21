@@ -11,12 +11,14 @@ import { Observable } from 'rxjs';
 @Injectable()
 export class CredentialsInterceptor implements HttpInterceptor {
 
-  // Fuerza el envío de cookies en todas las peticiones HTTP
-  intercept(
-    req: HttpRequest<any>,
-    next: HttpHandler
-  ): Observable<HttpEvent<any>> {
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
+    // No envia cookies a APIs públicas
+    if (req.url.includes('pokeapi.co')) {
+      return next.handle(req);
+    }
+
+    // Solo back-end propio
     const reqWithCredentials = req.clone({
       withCredentials: true
     });
